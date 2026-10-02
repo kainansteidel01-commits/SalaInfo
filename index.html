@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>SalaInfo | EMEB Vereador Evaldo Staidel</title>
+
+  <style>
+    /* =========================
+       CONFIGURAÇÕES GERAIS
+    ========================== */
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: #f8fafc;
+      color: #111827;
+      min-height: 100vh;
+    }
+
+
+    /* =========================
+       TELA DE CARREGAMENTO
+    ========================== */
+
+    .loading-screen {
+      min-height: 100vh;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      padding: 30px;
+    }
+
+    .loading-container {
+      width: 100%;
+      max-width: 430px;
+
+      text-align: center;
+    }
+
+
+    /* =========================
+       ÍCONE
+    ========================== */
+
+    .icon-container {
+      width: 86px;
+      height: 86px;
+
+      margin: 0 auto 28px;
+
+      border: 1px solid #dfe3e8;
+      border-radius: 24px;
+
+      background: #ffffff;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .computer-icon {
+      width: 48px;
+      height: 48px;
+    }
+
+
+    /* =========================
+       NOME DO SISTEMA
+    ========================== */
+
+    .system-name {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -2px;
+
+      color: #111827;
+    }
+
+    .system-name span {
+      font-weight: 400;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+
+      font-size: 16px;
+      line-height: 1.5;
+
+      color: #6b7280;
+    }
+
+
+    /* =========================
+       CARREGAMENTO
+    ========================== */
+
+    .loading-area {
+      width: 100%;
+      max-width: 320px;
+
+      margin: 38px auto 0;
+    }
+
+    .progress-background {
+      width: 100%;
+      height: 6px;
+
+      background: #e5e7eb;
+
+      border-radius: 999px;
+
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      width: 0%;
+      height: 100%;
+
+      background: #111827;
+
+      border-radius: 999px;
+
+      animation: loading 2.2s ease forwards;
+    }
+
+    .loading-text {
+      margin-top: 14px;
+
+      font-size: 14px;
+
+      color: #6b7280;
+    }
+
+
+    /* =========================
+       ESCOLA
+    ========================== */
+
+    .school {
+      margin-top: 55px;
+      padding-top: 20px;
+
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .school-name {
+      font-size: 12px;
+      font-weight: 700;
+
+      letter-spacing: 1.4px;
+
+      text-transform: uppercase;
+
+      color: #6b7280;
+    }
+
+    .year {
+      margin-top: 7px;
+
+      font-size: 12px;
+
+      color: #9ca3af;
+    }
+
+
+    /* =========================
+       ANIMAÇÃO
+    ========================== */
+
+    @keyframes loading {
+
+      0% {
+        width: 0%;
+      }
+
+      25% {
+        width: 28%;
+      }
+
+      55% {
+        width: 60%;
+      }
+
+      80% {
+        width: 85%;
+      }
+
+      100% {
+        width: 100%;
+      }
+
+    }
+
+
+    /* =========================
+       CELULAR
+    ========================== */
+
+    @media (max-width: 500px) {
+
+      .system-name {
+        font-size: 42px;
+      }
+
+      .loading-screen {
+        padding: 24px;
+      }
+
+    }
+
+  </style>
+</head>
+
+
+<body>
+
+  <main class="loading-screen">
+
+    <div class="loading-container">
+
+
+      <!-- ÍCONE -->
+
+      <div class="icon-container">
+
+        <svg
+          class="computer-icon"
+          viewBox="0 0 64 64"
+          xmlns="http://www.w3.org/2000/svg"
+          aria-label="Computador"
+        >
+
+          <rect
+            x="8"
+            y="11"
+            width="48"
+            height="33"
+            rx="5"
+            fill="none"
+            stroke="#111827"
+            stroke-width="3"
+          />
+
+          <path
+            d="M25 53H39 M32 44V53"
+            fill="none"
+            stroke="#111827"
+            stroke-width="3"
+            stroke-linecap="round"
+          />
+
+          <circle
+            cx="18"
+            cy="20"
+            r="2.5"
+            fill="#2563eb"
+          />
+
+          <circle
+            cx="26"
+            cy="20"
+            r="2.5"
+            fill="#16a34a"
+          />
+
+          <circle
+            cx="34"
+            cy="20"
+            r="2.5"
+            fill="#f59e0b"
+          />
+
+        </svg>
+
+      </div>
+
+
+      <!-- NOME -->
+
+      <h1 class="system-name">
+        Sala<span>Info</span>
+      </h1>
+
+      <p class="subtitle">
+        Sistema de Reserva da Sala de Informática
+      </p>
+
+
+      <!-- CARREGAMENTO -->
+
+      <div class="loading-area">
+
+        <div class="progress-background">
+
+          <div
+            class="progress-bar"
+            id="progressBar"
+          ></div>
+
+        </div>
+
+        <p
+          class="loading-text"
+          id="loadingText"
+        >
+          Carregando sistema...
+        </p>
+
+      </div>
+
+
+      <!-- ESCOLA -->
+
+      <footer class="school">
+
+        <p class="school-name">
+          EMEB Vereador Evaldo Staidel
+        </p>
+
+        <p class="year">
+          2026
+        </p>
+
+      </footer>
+
+
+    </div>
+
+  </main>
+
+
+  <script>
+
+    /*
+      Por enquanto esta tela é independente.
+
+      Quando criarmos a tela de login,
+      este código será responsável pela
+      transição automática para ela.
+    */
+
+    const loadingText =
+      document.getElementById("loadingText");
+
+    setTimeout(() => {
+
+      loadingText.textContent =
+        "Sistema pronto";
+
+    }, 2200);
+
+  </script>
+
+</body>
+</html>
