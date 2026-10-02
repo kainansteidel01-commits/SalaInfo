@@ -18,7 +18,26 @@
       auth: {
         async signIn(email, password) {
           const { data, error } = await db().auth.signInWithPassword({ email: email.trim(), password });
-          if (error) throw new Error('Não foi possível entrar. Confira o e-mail, a senha e sua conexão.');
+          if (error) {
+            const messages = {
+              invalid_credentials: 'E-mail ou senha não reconhecidos. Use os dados cadastrados em Authentication → Users.',
+              email_not_confirmed: 'O e-mail desta conta ainda não foi confirmado no Supabase.',
+              email_provider_disabled: 'O acesso por e-mail está desativado no Supabase. Confira a configuração do provedor Email.',
+              provider_disabled: 'O provedor de login está desativado no Supabase.',
+              over_request_rate_limit: 'Muitas tentativas de acesso. Aguarde alguns minutos antes de tentar novamente.',
+              user_banned: 'Esta conta está bloqueada no Supabase.',
+              captcha_failed: 'O Supabase está exigindo uma verificação CAPTCHA que precisa ser configurada no site.'
+            };
+            const code = /^[a-z0-9_]+$/.test(error.code || '') ? error.code : '';
+            const status = Number.isInteger(error.status) ? error.status : 0;
+            const message = messages[code] || (status === 429
+              ? 'Muitas tentativas de acesso. Aguarde alguns minutos.'
+              : status >= 500 ? 'O serviço de autenticação encontrou um erro. Confira os logs de Authentication no Supabase.'
+              : status === 401 ? 'A conexão não foi autorizada. Confira a URL e a chave pública do projeto.'
+              : !status ? 'Não foi possível conectar ao Supabase. Verifique a internet e se o projeto está ativo.'
+              : 'O Supabase recusou o login.');
+            throw new Error(message + (code || status ? ' [Código: ' + (code || 'HTTP') + (status ? '; HTTP ' + status : '') + ']' : ''));
+          }
           const profile = await db().from('profiles').select('id,name,role').eq('id', data.user.id).eq('active', true).maybeSingle();
           if (profile.error || !profile.data) {
             await db().auth.signOut({ scope: 'local' });
