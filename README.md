@@ -1,5 +1,7 @@
 # SalaInfo — EMEB Vereador Evaldo Staidel
 
+> ATUALIZAÇÃO: a interface agora usa Supabase. Siga CONFIGURAR-SUPABASE.md para instalar o banco, autorizar professores e publicar os cinco arquivos de frontend. O login é por e-mail e senha reais cadastrados no Supabase. A sessão fica em memória, exigindo novo login ao recarregar. As informações abaixo descrevem o protótipo local anterior, cujo adaptador foi mantido somente para testes. Reservas locais não são migradas automaticamente.
+
 Abra index.html em um navegador moderno. O projeto usa HTML, CSS e JavaScript sem instalação de dependências. Para testar entre abas com uma origem estável, sirva esta pasta por HTTP local.
 
 Usuário de demonstração: ana.evaldostaidel. Qualquer sequência de seis números permite entrar. Não use credenciais reais: este login é uma simulação e não protege os dados.

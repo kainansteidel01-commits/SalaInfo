@@ -2,7 +2,7 @@
 const $ = id => document.getElementById(id);
 const { today, validDate, classes } = SalaInfo;
 // Only this composition point changes when shared services are implemented.
-const services = SalaInfo.createServices({ getItem: key => localStorage.getItem(key), setItem: (key, value) => localStorage.setItem(key, value) }, navigator.locks);
+const services = SalaInfo.createCloudServices();
 let rows = [], currentUser = null, busy = false;
 const formatDate = value => new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long', timeZone: 'America/Sao_Paulo' }).format(new Date(value + 'T12:00:00Z'));
 function node(tag, className, text) {
@@ -53,7 +53,10 @@ function render() {
   });
 }
 async function refresh() {
-  rows = await services.reservations.list();
+  const user = currentUser;
+  const result = await services.reservations.list();
+  if (!user || user !== currentUser) return;
+  rows = result;
   $('appError').textContent = ''; render();
 }
 function updateLessons(preferred = '') {
@@ -93,6 +96,8 @@ $('loginForm').onsubmit = async event => {
   event.preventDefault();
   try {
     currentUser = await services.auth.signIn($('username').value, $('password').value);
+    document.querySelector('.welcome h1').textContent = 'Olá, ' + currentUser.name + '.';
+    document.querySelector('#reservationForm .demo-note').textContent = 'Sala de Informática · ' + currentUser.name;
     $('password').value = ''; $('password').type = 'password'; $('showPassword').textContent = 'Mostrar';
     $('loginMessage').style.display = 'none';
     $('loginScreen').style.display = 'none'; $('appScreen').style.display = 'block';
@@ -100,7 +105,9 @@ $('loginForm').onsubmit = async event => {
   } catch (error) { $('loginMessage').style.display = 'block'; $('loginMessage').textContent = error.message; }
 };
 $('logoutButton').onclick = async () => {
-  await services.auth.signOut(); currentUser = null; rows = [];
+  try { await services.auth.signOut(); }
+  catch (error) { $('appError').textContent = error.message; return; }
+  currentUser = null; rows = [];
   $('reservationDialog').close(); $('appScreen').style.display = 'none';
   $('cancellationDialog').close();
   $('notice').textContent = ''; $('loginScreen').style.display = 'flex'; $('password').focus();
@@ -160,3 +167,16 @@ window.addEventListener('storage', event => {
     if ($('reservationDialog').open) updateLessons($('lesson').value);
   }).catch(error => $('appError').textContent = error.message);
 });
+// Shared reservations refresh every 15 seconds while the page is visible.
+let polling = false;
+async function syncSharedReservations() {
+  if (!currentUser || document.hidden || polling) return;
+  polling = true;
+  try {
+    await refresh();
+    if (currentUser && $('reservationDialog').open) updateLessons($('lesson').value);
+  } catch (error) { if (currentUser) $('appError').textContent = error.message; }
+  finally { polling = false; }
+}
+setInterval(syncSharedReservations, 15000);
+window.addEventListener('focus', syncSharedReservations);

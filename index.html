@@ -779,7 +779,7 @@
         <h2>Acesse sua conta</h2>
 
         <p class="login-description">
-          Demonstração: use ana.evaldostaidel e qualquer sequência de 6 números. Não use uma senha real.
+          Entre com o e-mail e a senha cadastrados pela escola.
         </p>
 
         <form id="loginForm">
@@ -787,13 +787,13 @@
           <div class="form-group">
 
             <label for="username">
-              Usuário
+              E-mail
             </label>
 
             <input
               id="username"
-              type="text"
-              value="ana.evaldostaidel"
+              type="email"
+              placeholder="Seu e-mail cadastrado"
               autocomplete="username"
               required
             >
@@ -811,10 +811,7 @@
               <input
                 id="password"
                 type="password"
-                inputmode="numeric"
-                maxlength="6"
-                pattern="[0-9]{6}"
-                placeholder="6 dígitos"
+                placeholder="Sua senha"
                 autocomplete="current-password"
                 required
               >
@@ -866,7 +863,7 @@
 </div><button id="logoutButton" class="logout-button">Sair</button></div></header>
 <div class="app-content">
 <section class="welcome"><div class="welcome-label">Sala de Informática</div><h1>Olá, Ana.</h1><p>Consulte a disponibilidade da sala e organize suas próximas reservas.</p></section>
-<p class="demo-note">Modo demonstração · Reservas salvas somente neste navegador.</p>
+<p class="demo-note">Agenda compartilhada · Atualização automática a cada 15 segundos.</p>
 <p id="notice" role="status"></p><p id="appError" class="error" role="alert"></p>
 <section class="summary-grid"><article class="summary-card"><span>Aulas disponíveis hoje</span><strong id="availableCount">—</strong></article><article class="summary-card"><span>Aulas reservadas hoje</span><strong id="reservedCount">—</strong></article><article class="summary-card"><span>Minhas próximas reservas</span><strong id="mineCount">—</strong></article></section>
 <section class="dashboard-grid">
@@ -892,5 +889,6 @@
 <p id="cancellationError" class="error" role="alert"></p>
 <div class="actions"><button id="keepReservation" class="logout-button" type="button" autofocus>Manter reserva</button><button id="confirmCancellation" class="new-reservation" type="button">Sim, cancelar reserva</button></div>
 </dialog>
-<script src="services.js"></script><script src="app.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.57.4/dist/umd/supabase.js"></script>
+<script src="services.js"></script><script src="supabase-config.js"></script><script src="supabase-service.js"></script><script src="app.js"></script>
 </body></html>
