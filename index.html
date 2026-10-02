@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>SalaInfo | EMEB Vereador Evaldo Staidel</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --background: #f8fafc;
+      --card: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --border: #e5e7eb;
+      --blue: #2563eb;
+      --blue-light: #eff6ff;
+      --green: #16a34a;
+      --green-light: #f0fdf4;
+      --red: #dc2626;
+      --red-light: #fef2f2;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--background);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font-family: inherit;
+    }
+
+    /* =========================================
+       COMPONENTES
+    ========================================== */
+
+    .logo {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: -1.5px;
+    }
+
+    .logo span {
+      font-weight: 400;
+    }
+
+    .computer-icon {
+      width: 45px;
+      height: 45px;
+    }
+
+    /* =========================================
+       CARREGAMENTO
+    ========================================== */
+
+    #loadingScreen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 30px;
+      transition: opacity 0.5s ease;
+    }
+
+    #loadingScreen.hide {
+      opacity: 0;
+    }
+
+    .loading-container {
+      width: 100%;
+      max-width: 430px;
+      text-align: center;
+    }
+
+    .icon-container {
+      width: 86px;
+      height: 86px;
+      margin: 0 auto 28px;
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .loading-logo {
+      font-size: 48px;
+      font-weight: 800;
+      letter-spacing: -2px;
+    }
+
+    .loading-logo span {
+      font-weight: 400;
+    }
+
+    .subtitle {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    .loading-area {
+      max-width: 320px;
+      margin: 38px auto 0;
+    }
+
+    .progress-background {
+      width: 100%;
+      height: 6px;
+      background: var(--border);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      height: 100%;
+      width: 0;
+      background: var(--text);
+      border-radius: 999px;
+      animation: loading 2s ease forwards;
+    }
+
+    .loading-text {
+      margin-top: 14px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    @keyframes loading {
+      0% { width: 0; }
+      30% { width: 30%; }
+      60% { width: 63%; }
+      85% { width: 87%; }
+      100% { width: 100%; }
+    }
+
+    .school-footer {
+      margin-top: 50px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    .school-footer strong {
+      display: block;
+      font-size: 11px;
+      letter-spacing: 1.3px;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    .school-footer p {
+      margin-top: 6px;
+      font-size: 11px;
+      color: #9ca3af;
+    }
+
+    /* =========================================
+       LOGIN
+    ========================================== */
+
+    #loginScreen {
+      min-height: 100vh;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 35px 20px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+
+    #loginScreen.show {
+      opacity: 1;
+    }
+
+    .login-wrapper {
+      width: 100%;
+      max-width: 430px;
+    }
+
+    .login-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .login-small-icon {
+      width: 70px;
+      height: 70px;
+      margin: 0 auto 18px;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .login-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 30px;
+    }
+
+    .login-card h2 {
+      font-size: 23px;
+      margin-bottom: 7px;
+    }
+
+    .login-description {
+      font-size: 14px;
+      color: var(--muted);
+      line-height: 1.5;
+      margin-bottom: 27px;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 15px;
+      border: 1px solid #d1d5db;
+      border-radius: 11px;
+      background: white;
+      color: var(--text);
+      font-size: 16px;
+      outline: none;
+      transition: 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: var(--text);
+      box-shadow: 0 0 0 3px rgba(17, 24, 39, 0.07);
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .password-container input {
+      padding-right: 85px;
+    }
+
+    .show-password {
+      position: absolute;
+      right: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      border: none;
+      background: none;
+      cursor: pointer;
+      color: var(--muted);
+      font-weight: 600;
+      padding: 8px;
+    }
+
+    .login-button {
+      width: 100%;
+      border: none;
+      border-radius: 11px;
+      padding: 15px;
+      background: var(--text);
+      color: white;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .login-button:hover {
+      background: #252d3a;
+    }
+
+    #loginMessage {
+      display: none;
+      margin-top: 15px;
+      font-size: 13px;
+      text-align: center;
+      color: var(--red);
+    }
+
+    /* =========================================
+       SISTEMA
+    ========================================== */
+
+    #appScreen {
+      display: none;
+      min-height: 100vh;
+    }
+
+    /* HEADER */
+
+    .app-header {
+      background: white;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-container {
+      max-width: 1200px;
+      margin: auto;
+      min-height: 72px;
+      padding: 0 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 35px;
+    }
+
+    .header-logo {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -1px;
+    }
+
+    .header-logo span {
+      font-weight: 400;
+    }
+
+    .navigation {
+      display: flex;
+      gap: 6px;
+    }
+
+    .nav-button {
+      border: none;
+      background: transparent;
+      padding: 10px 13px;
+      border-radius: 8px;
+      color: var(--muted);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .nav-button.active {
+      background: #f3f4f6;
+      color: var(--text);
+    }
+
+    .logout-button {
+      border: 1px solid var(--border);
+      background: white;
+      padding: 9px 14px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    /* CONTEÚDO */
+
+    .app-content {
+      max-width: 1200px;
+      margin: auto;
+      padding: 45px 25px 70px;
+    }
+
+    .welcome {
+      margin-bottom: 35px;
+    }
+
+    .welcome-label {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+
+    .welcome h1 {
+      font-size: 31px;
+      letter-spacing: -0.8px;
+    }
+
+    .welcome p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 15px;
+    }
+
+    /* RESUMO */
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 35px;
+    }
+
+    .summary-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 21px;
+    }
+
+    .summary-card span {
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 8px;
+      font-size: 27px;
+    }
+
+    /* GRID PRINCIPAL */
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 22px;
+      align-items: start;
+    }
+
+    .panel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 22px 23px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .panel-header h2 {
+      font-size: 18px;
+    }
+
+    .panel-header p {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .new-reservation {
+      border: none;
+      background: var(--text);
+      color: white;
+      padding: 11px 15px;
+      border-radius: 9px;
+      cursor: pointer;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    /* HORÁRIOS */
+
+    .schedule {
+      padding: 10px 22px 20px;
+    }
+
+    .schedule-item {
+      min-height: 72px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .schedule-item:last-child {
+      border-bottom: none;
+    }
+
+    .lesson {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .lesson-number {
+      width: 42px;
+      height: 42px;
+      border-radius: 11px;
+      background: #f3f4f6;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    .lesson-info strong {
+      font-size: 14px;
+    }
+
+    .lesson-info p {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .status {
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .available {
+      background: var(--green-light);
+      color: var(--green);
+    }
+
+    .reserved {
+      background: var(--red-light);
+      color: var(--red);
+    }
+
+    /* PRÓXIMAS RESERVAS */
+
+    .reservations-list {
+      padding: 10px 22px 20px;
+    }
+
+    .reservation-item {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .reservation-item:last-child {
+      border-bottom: none;
+    }
+
+    .reservation-date {
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
+
+    .reservation-title {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .reservation-details {
+      margin-top: 5px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .empty-message {
+      padding: 30px 10px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* =========================================
+       MOBILE
+    ========================================== */
+
+    @media (max-width: 800px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .navigation {
+        display: none;
+      }
+
+      .header-container {
+        padding: 0 18px;
+      }
+
+      .app-content {
+        padding: 30px 18px 60px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .loading-logo {
+        font-size: 42px;
+      }
+
+      .login-card {
+        padding: 24px 20px;
+      }
+
+      .panel-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .new-reservation {
+        width: 100%;
+      }
+
+      .schedule {
+        padding: 8px 16px 16px;
+      }
+
+      .schedule-item {
+        padding: 12px 0;
+      }
+    }
+  
+    [hidden] { display:none !important; }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline:3px solid #2563eb; outline-offset:3px; }
+    button:disabled { opacity:.5; cursor:not-allowed; }
+    .date-filter { padding:18px 23px; border-bottom:1px solid var(--border); }
+    input, select, textarea { font:inherit; }
+    .date-filter input, select, textarea { padding:12px; border:1px solid #d1d5db; border-radius:10px; background:white; }
+    .form-group select,.form-group textarea { width:100%; }
+    .demo-note { color:var(--muted); font-size:13px; line-height:1.6; margin:16px 0; }
+    dialog { margin:auto; width:min(520px,calc(100% - 32px)); max-height:90vh; overflow:auto; padding:28px; border:1px solid var(--border); border-radius:20px; color:var(--text); }
+    dialog::backdrop { background:rgba(17,24,39,.4); }
+    dialog h2 { margin-bottom:8px; }
+    .actions { display:flex; justify-content:flex-end; gap:12px; margin-top:20px; }
+    .error { color:#b91c1c; line-height:1.5; margin-top:12px; }
+    #notice { margin-bottom:20px; color:#166534; }
+    .status.available { border:0; cursor:pointer; }
+    .reservation-details { overflow-wrap:anywhere; line-height:1.6; }
+    @media(max-width:800px) { .navigation {display:flex; flex-wrap:wrap;} .header-left {gap:12px; flex-wrap:wrap;} .header-container {padding-top:12px;padding-bottom:12px;gap:10px;} }
+  </style>
+</head>
+
+<body>
+
+  <!-- =========================================
+       TELA DE CARREGAMENTO
+  ========================================== -->
+
+  <main id="loadingScreen">
+
+    <div class="loading-container">
+
+      <div class="icon-container">
+
+        <svg class="computer-icon" viewBox="0 0 64 64">
+
+          <rect
+            x="8"
+            y="11"
+            width="48"
+            height="33"
+            rx="5"
+            fill="none"
+            stroke="#111827"
+            stroke-width="3"
+          />
+
+          <path
+            d="M25 53H39 M32 44V53"
+            fill="none"
+            stroke="#111827"
+            stroke-width="3"
+            stroke-linecap="round"
+          />
+
+          <circle cx="18" cy="20" r="2.5" fill="#2563eb"/>
+          <circle cx="26" cy="20" r="2.5" fill="#16a34a"/>
+          <circle cx="34" cy="20" r="2.5" fill="#f59e0b"/>
+
+        </svg>
+
+      </div>
+
+      <div class="loading-logo">
+        Sala<span>Info</span>
+      </div>
+
+      <p class="subtitle">
+        Sistema de Reserva da Sala de Informática
+      </p>
+
+      <div class="loading-area">
+
+        <div class="progress-background">
+          <div class="progress-bar"></div>
+        </div>
+
+        <p class="loading-text">
+          Carregando sistema...
+        </p>
+
+      </div>
+
+      <footer class="school-footer">
+        <strong>EMEB Vereador Evaldo Staidel</strong>
+        <p>2026</p>
+      </footer>
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================================
+       LOGIN
+  ========================================== -->
+
+  <main id="loginScreen">
+
+    <div class="login-wrapper">
+
+      <header class="login-header">
+
+        <div class="login-small-icon">
+
+          <svg class="computer-icon" viewBox="0 0 64 64">
+
+            <rect
+              x="8"
+              y="11"
+              width="48"
+              height="33"
+              rx="5"
+              fill="none"
+              stroke="#111827"
+              stroke-width="3"
+            />
+
+            <path
+              d="M25 53H39 M32 44V53"
+              fill="none"
+              stroke="#111827"
+              stroke-width="3"
+              stroke-linecap="round"
+            />
+
+            <circle cx="18" cy="20" r="2.5" fill="#2563eb"/>
+            <circle cx="26" cy="20" r="2.5" fill="#16a34a"/>
+            <circle cx="34" cy="20" r="2.5" fill="#f59e0b"/>
+
+          </svg>
+
+        </div>
+
+        <div class="logo">
+          Sala<span>Info</span>
+        </div>
+
+        <p class="subtitle">
+          Sistema de Reserva da Sala de Informática
+        </p>
+
+      </header>
+
+
+      <section class="login-card">
+
+        <h2>Acesse sua conta</h2>
+
+        <p class="login-description">
+          Demonstração: use ana.evaldostaidel e qualquer sequência de 6 números. Não use uma senha real.
+        </p>
+
+        <form id="loginForm">
+
+          <div class="form-group">
+
+            <label for="username">
+              Usuário
+            </label>
+
+            <input
+              id="username"
+              type="text"
+              value="ana.evaldostaidel"
+              autocomplete="username"
+              required
+            >
+
+          </div>
+
+          <div class="form-group">
+
+            <label for="password">
+              Senha
+            </label>
+
+            <div class="password-container">
+
+              <input
+                id="password"
+                type="password"
+                inputmode="numeric"
+                maxlength="6"
+                pattern="[0-9]{6}"
+                placeholder="6 dígitos"
+                autocomplete="current-password"
+                required
+              >
+
+              <button
+                id="showPassword"
+                class="show-password"
+                type="button"
+              >
+                Mostrar
+              </button>
+
+            </div>
+
+          </div>
+
+          <button
+            class="login-button"
+            type="submit"
+          >
+            Entrar
+          </button>
+
+          <p id="loginMessage"></p>
+
+        </form>
+
+      </section>
+
+      <footer class="school-footer">
+        <strong>EMEB Vereador Evaldo Staidel</strong>
+        <p>Acesso restrito aos usuários autorizados</p>
+      </footer>
+
+    </div>
+
+  </main>
+
+
+  <!-- =========================================
+       SISTEMA SALAINFO
+  ========================================== -->
+
+
+<main id="appScreen">
+<header class="app-header"><div class="header-container"><div class="header-left">
+<div class="header-logo">Sala<span>Info</span></div>
+<nav class="navigation" aria-label="Principal"><button class="nav-button active" data-view="home">Início</button><button class="nav-button" data-view="reservations">Reservas</button><button class="nav-button" data-view="mine">Minha agenda</button></nav>
+</div><button id="logoutButton" class="logout-button">Sair</button></div></header>
+<div class="app-content">
+<section class="welcome"><div class="welcome-label">Sala de Informática</div><h1>Olá, Ana.</h1><p>Consulte a disponibilidade da sala e organize suas próximas reservas.</p></section>
+<p class="demo-note">Modo demonstração · Reservas salvas somente neste navegador.</p>
+<p id="notice" role="status"></p><p id="appError" class="error" role="alert"></p>
+<section class="summary-grid"><article class="summary-card"><span>Aulas disponíveis hoje</span><strong id="availableCount">—</strong></article><article class="summary-card"><span>Aulas reservadas hoje</span><strong id="reservedCount">—</strong></article><article class="summary-card"><span>Minhas próximas reservas</span><strong id="mineCount">—</strong></article></section>
+<section class="dashboard-grid">
+<article class="panel" id="availabilityPanel"><header class="panel-header"><div><h2 id="availabilityTitle">Disponibilidade de hoje</h2><p id="selectedDateLabel"></p></div><button class="new-reservation" id="newReservation">+ Nova reserva</button></header>
+<div class="date-filter"><label for="viewDate">Consultar data </label><input id="viewDate" type="date" required></div><div class="schedule" id="schedule"></div></article>
+<article class="panel" id="minePanel"><header class="panel-header"><div><h2>Minhas próximas reservas</h2><p>Seus próximos encontros na Sala de Informática</p></div></header><div class="reservations-list" id="reservationsList"></div></article>
+</section>
+<footer class="school-footer"><strong>EMEB Vereador Evaldo Staidel</strong><p>SalaInfo · Organização para ensinar melhor</p></footer>
+</div></main>
+<dialog id="reservationDialog" aria-labelledby="dialogTitle">
+<form id="reservationForm">
+<h2 id="dialogTitle">Nova reserva</h2><p class="demo-note">Sala de Informática · Professora Ana</p>
+<div class="form-group"><label for="reservationDate">Data</label><input id="reservationDate" type="date" required></div>
+<div class="form-group"><label for="lesson">Aula</label><select id="lesson" required></select></div>
+<div class="form-group"><label for="schoolClass">Turma</label><select id="schoolClass" required><option value="">Selecione a turma</option></select><p class="demo-note">Turmas de exemplo para demonstração.</p></div>
+<div class="form-group"><label for="purpose">Finalidade <span class="demo-note">(opcional)</span></label><textarea id="purpose" rows="3" maxlength="300" placeholder="O que será trabalhado com a turma?"></textarea></div>
+<p id="reservationError" class="error" role="alert"></p>
+<div class="actions"><button class="logout-button" id="cancelReservation" type="button">Cancelar</button><button class="new-reservation" id="confirmReservation" type="submit">Confirmar reserva</button></div>
+</form></dialog>
+<dialog id="cancellationDialog" aria-labelledby="cancellationTitle" aria-describedby="cancellationDetails">
+<h2 id="cancellationTitle">Cancelar reserva?</h2>
+<p id="cancellationDetails" class="demo-note"></p>
+<p id="cancellationError" class="error" role="alert"></p>
+<div class="actions"><button id="keepReservation" class="logout-button" type="button" autofocus>Manter reserva</button><button id="confirmCancellation" class="new-reservation" type="button">Sim, cancelar reserva</button></div>
+</dialog>
+<script src="services.js"></script><script src="app.js"></script>
+</body></html>
