@@ -844,6 +844,8 @@
       <footer class="school-footer">
         <strong>EMEB Vereador Evaldo Staidel</strong>
         <p>Acesso restrito aos usuários autorizados</p>
+        <p><a href="#secretaria" id="secretaryAccess">É da secretaria? Acesse o painel administrativo.</a></p>
+        <p><a href="#" id="teacherAccess" hidden>Voltar ao acesso dos professores</a></p>
       </footer>
 
     </div>
@@ -865,6 +867,22 @@
 <section class="welcome"><div class="welcome-label">Sala de Informática</div><h1>Olá, Ana.</h1><p>Consulte a disponibilidade da sala e organize suas próximas reservas.</p></section>
 <p class="demo-note">Agenda compartilhada · Atualização automática a cada 15 segundos.</p>
 <p id="notice" role="status"></p><p id="appError" class="error" role="alert"></p>
+<section id="secretaryPanel" hidden>
+<header class="panel-header"><div><h2>Painel da secretaria</h2><p>Professores e reservas da escola</p></div></header>
+<div class="dashboard-grid" style="margin:20px 0">
+<article class="panel" style="padding:24px"><h2>Cadastrar professor</h2>
+<p class="demo-note">Confira a identidade e o e-mail do professor antes do cadastro. Entregue a senha diretamente a ele.</p>
+<form id="teacherForm">
+<div class="form-group"><label for="teacherName">Nome do professor</label><input id="teacherName" maxlength="100" required></div>
+<div class="form-group"><label for="teacherEmail">E-mail do professor</label><input id="teacherEmail" type="email" maxlength="254" required></div>
+<div class="form-group"><label for="teacherPassword">Senha inicial (mínimo 12 caracteres)</label><input id="teacherPassword" type="password" minlength="12" maxlength="128" autocomplete="new-password" required></div>
+<button id="saveTeacher" class="new-reservation">Cadastrar professor</button>
+<p id="teacherMessage" class="demo-note" role="status"></p></form></article>
+<article class="panel" style="padding:24px"><h2>Professores e equipe</h2><div id="teacherList"></div></article>
+</div>
+<article class="panel" style="padding:24px;margin-bottom:24px"><h2>Todas as reservas</h2>
+<p class="demo-note">Inclui datas passadas. O cancelamento libera a aula e remove a reserva.</p><div id="adminReservations"></div></article>
+</section>
 <section class="summary-grid"><article class="summary-card"><span>Aulas disponíveis hoje</span><strong id="availableCount">—</strong></article><article class="summary-card"><span>Aulas reservadas hoje</span><strong id="reservedCount">—</strong></article><article class="summary-card"><span>Minhas próximas reservas</span><strong id="mineCount">—</strong></article></section>
 <section class="dashboard-grid">
 <article class="panel" id="availabilityPanel"><header class="panel-header"><div><h2 id="availabilityTitle">Disponibilidade de hoje</h2><p id="selectedDateLabel"></p></div><button class="new-reservation" id="newReservation">+ Nova reserva</button></header>

@@ -4,6 +4,49 @@ const { today, validDate, classes } = SalaInfo;
 // Only this composition point changes when shared services are implemented.
 const services = SalaInfo.createCloudServices();
 let rows = [], currentUser = null, busy = false;
+let secretaryMode = location.hash === '#secretaria';
+function setLoginMode() {
+  secretaryMode = location.hash === '#secretaria';
+  document.querySelector('.login-card h2').textContent = secretaryMode ? 'Acesso da secretaria' : 'Acesse sua conta';
+  $('teacherAccess').hidden = !secretaryMode;
+  $('secretaryAccess').hidden = secretaryMode;
+}
+window.addEventListener('hashchange', setLoginMode);
+setLoginMode();
+function renderAdmin() {
+  $('adminReservations').replaceChildren();
+  if (!rows.length) $('adminReservations').append(node('p', 'empty-message', 'Nenhuma reserva cadastrada.'));
+  [...rows].sort((a,b) => b.date.localeCompare(a.date) || a.lesson-b.lesson).forEach(r => {
+    const item = node('div', 'reservation-item', '');
+    item.append(node('p','reservation-title',formatDate(r.date) + ' · ' + r.lesson + 'ª aula'), node('p','reservation-details',r.teacher + ' · ' + r.schoolClass + (r.purpose ? ' · ' + r.purpose : '')));
+    const cancel = node('button','logout-button','Cancelar reserva');
+    cancel.onclick = () => {
+      $('cancellationDetails').textContent = r.teacher + ' · ' + formatDate(r.date) + ' · ' + r.lesson + 'ª aula · ' + r.schoolClass + '. A reserva será removida.';
+      $('cancellationError').textContent = '';
+      $('confirmCancellation').dataset.reservationId = r.id;
+      $('cancellationDialog').showModal();
+    };
+    item.append(cancel); $('adminReservations').append(item);
+  });
+}
+async function loadTeachers() {
+  const user = currentUser;
+  const people = await services.admin.teachers();
+  if (!user || currentUser !== user) return;
+  $('teacherList').replaceChildren();
+  people.forEach(p => $('teacherList').append(node('p','reservation-item',p.name + ' · ' + (p.role === 'secretary' ? 'Secretaria' : 'Professor') + ' · ' + (p.active ? 'Ativo' : 'Inativo'))));
+}
+$('teacherForm').onsubmit = async event => {
+  event.preventDefault();
+  if ($('saveTeacher').disabled) return;
+  $('saveTeacher').disabled = true; $('teacherMessage').textContent = '';
+  try {
+    const result = await services.admin.createTeacher({name:$('teacherName').value.trim(),email:$('teacherEmail').value.trim(),password:$('teacherPassword').value});
+    $('teacherForm').reset(); $('teacherMessage').textContent = result.message;
+    await loadTeachers();
+  } catch(error) { $('teacherMessage').textContent = error.message; }
+  finally { $('teacherPassword').value = ''; $('saveTeacher').disabled = false; }
+};
 const formatDate = value => new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long', timeZone: 'America/Sao_Paulo' }).format(new Date(value + 'T12:00:00Z'));
 function node(tag, className, text) {
   const el = document.createElement(tag); el.className = className; el.textContent = text; return el;
@@ -58,6 +101,7 @@ async function refresh() {
   if (!user || user !== currentUser) return;
   rows = result;
   $('appError').textContent = ''; render();
+  if (currentUser.role === 'secretary') renderAdmin();
 }
 function updateLessons(preferred = '') {
   const occupied = rows.filter(r => r.date === $('reservationDate').value);
@@ -96,6 +140,14 @@ $('loginForm').onsubmit = async event => {
   event.preventDefault();
   try {
     currentUser = await services.auth.signIn($('username').value, $('password').value);
+    if (secretaryMode && currentUser.role !== 'secretary') {
+      await services.auth.signOut(); currentUser = null;
+      throw new Error('Este acesso é exclusivo da secretaria. Use o acesso dos professores.');
+    }
+    $('secretaryPanel').hidden = currentUser.role !== 'secretary';
+    if (currentUser.role === 'secretary') {
+      try { await loadTeachers(); } catch(error) { $('teacherMessage').textContent = error.message; }
+    }
     document.querySelector('.welcome h1').textContent = 'Olá, ' + currentUser.name + '.';
     document.querySelector('#reservationForm .demo-note').textContent = 'Sala de Informática · ' + currentUser.name;
     $('password').value = ''; $('password').type = 'password'; $('showPassword').textContent = 'Mostrar';
@@ -108,6 +160,7 @@ $('logoutButton').onclick = async () => {
   try { await services.auth.signOut(); }
   catch (error) { $('appError').textContent = error.message; return; }
   currentUser = null; rows = [];
+  $('secretaryPanel').hidden = true; $('teacherList').replaceChildren(); $('adminReservations').replaceChildren(); $('teacherForm').reset();
   $('reservationDialog').close(); $('appScreen').style.display = 'none';
   $('cancellationDialog').close();
   $('notice').textContent = ''; $('loginScreen').style.display = 'flex'; $('password').focus();

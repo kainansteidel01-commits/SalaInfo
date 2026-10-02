@@ -19,7 +19,7 @@
         async signIn(email, password) {
           const { data, error } = await db().auth.signInWithPassword({ email: email.trim(), password });
           if (error) throw new Error('Não foi possível entrar. Confira o e-mail, a senha e sua conexão.');
-          const profile = await db().from('profiles').select('id,name').eq('id', data.user.id).eq('active', true).maybeSingle();
+          const profile = await db().from('profiles').select('id,name,role').eq('id', data.user.id).eq('active', true).maybeSingle();
           if (profile.error || !profile.data) {
             await db().auth.signOut({ scope: 'local' });
             if (profile.error) fail(profile.error);
@@ -28,6 +28,25 @@
           return profile.data;
         },
         async signOut() { const { error } = await db().auth.signOut({ scope: 'local' }); fail(error); }
+      },
+      admin: {
+        async teachers() {
+          const result = [];
+          for (let offset = 0; ; offset += 500) {
+            const { data, error } = await db().from('profiles').select('id,name,active,role').order('id').range(offset, offset + 499);
+            fail(error); result.push(...data);
+            if (data.length < 500) return result;
+          }
+        },
+        async createTeacher(input) {
+          const { data, error } = await db().functions.invoke('create-teacher', { body: input });
+          if (error) {
+            let message = 'Não foi possível cadastrar. Confira se a função create-teacher foi publicada.';
+            try { message = (await error.context.json()).message || message; } catch {}
+            throw new Error(message);
+          }
+          return data;
+        }
       },
       reservations: {
         async list() {
