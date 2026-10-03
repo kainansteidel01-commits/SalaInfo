@@ -1,0 +1,73 @@
+:root { --blue-light:#edf3ff; --green-light:#edf8f2; --red-light:#fff3ed; --red:#9b4e25; }
+body { background:#f7f9fc; }
+button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
+button { min-height:44px; }
+.app-header { position:sticky;top:0;z-index:10;box-shadow:0 2px 14px #17233d05; }
+.school-brand { display:flex;align-items:center;gap:12px; }
+.school-mark { width:44px;height:44px;background:#edf3ff;border:1px solid #dce6fb;border-radius:14px;padding:8px;flex-shrink:0; }
+.school-name { display:block;font-size:10px;letter-spacing:.04em;font-weight:500;color:#69758a;margin-top:3px; }
+.user-profile { display:flex;align-items:center;gap:10px; }
+.avatar { display:grid;place-items:center;width:40px;height:40px;border-radius:50%;background:#e8eefc;color:#294b91;font-weight:700; }
+.profile-name { font-size:13px;font-weight:700;max-width:150px;overflow-wrap:anywhere; }
+.profile-role { display:block;font-size:11px;color:#69758a;margin-top:3px; }
+.header-container { max-width:1320px;gap:18px; }
+.header-left { gap:22px; }
+.app-content { max-width:1320px; }
+.summary-card { box-shadow:0 4px 20px #17233d03; }
+.summary-card strong { letter-spacing:-1px; }
+.login-small-icon { background:#edf3ff;border-color:#dce6fb; }
+#secretaryAccess,#teacherAccess { display:inline-block;color:#596d92;margin-top:10px;line-height:1.6; }
+.weekly-panel { margin:0 0 24px; }
+.week-controls { display:flex;gap:8px;align-items:center;flex-wrap:wrap; }
+.week-controls button { border:1px solid var(--border);background:white;border-radius:10px;padding:8px 13px;cursor:pointer; }
+.week-label { margin:6px 0;color:var(--muted);font-size:13px; }
+.calendar-scroll { overflow-x:auto;padding:0 20px 20px; }
+.weekly-table { border-collapse:separate;border-spacing:7px;width:100%;min-width:650px;table-layout:fixed; }
+.weekly-table th { font-size:12px;font-weight:600;color:#67738a;padding:10px 4px; }
+.weekly-table th:first-child { width:58px; }
+.weekly-table td { vertical-align:top; }
+.week-slot { width:100%;height:84px;border:1px solid #d9eadf;border-radius:12px;padding:10px;background:var(--green-light);color:#24704b;text-align:left;display:flex;flex-direction:column;gap:4px;justify-content:center;font:inherit;overflow-wrap:anywhere; }
+button.week-slot { cursor:pointer;transition:transform .15s,box-shadow .15s; }
+button.week-slot:hover { transform:translateY(-2px);box-shadow:0 4px 12px #1a513316; }
+.week-slot strong { font-size:12px; }
+.week-slot small { font-size:11px;line-height:1.25; }
+.week-slot.reserved { border-color:#f0ddcf;color:#8b532f;background:#fff3ed; }
+.week-slot.mine,.status.mine { background:#edf3ff;color:#315ca5;border-color:#ccdaf7; }
+.week-slot.past { background:#f3f4f6;border-color:#e6e8ed;color:#727b8b; }
+.calendar-legend { display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:#5b6678;padding:16px 26px; }
+.calendar-legend span::before { content:'';display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8fc9a7; }
+.calendar-legend .legend-mine::before { background:#85a6e8; }
+.calendar-legend .legend-reserved::before { background:#dfb493; }
+.today-column { color:#2563eb!important; }
+#reservationsList .reservation-item { border:1px solid #dce6fb;border-left:4px solid #8aa9e8;border-radius:12px;background:#f8faff;padding:18px;margin:12px 0; }
+.reservation-date { font-size:12px;font-weight:600;color:#416497; }
+.reservation-title { font-size:16px;line-height:1.5; }
+.reservation-details { font-size:13px; }
+.logout-button { min-height:44px; }
+#notice:empty { display:none; }
+#notice:not(:empty) { position:fixed;bottom:24px;right:24px;z-index:40;max-width:min(460px,calc(100vw - 32px));padding:18px 22px;background:#f0faf4;color:#215b39;border:1px solid #c6e4d0;border-radius:14px;box-shadow:0 8px 35px #15332218;font-size:14px;line-height:1.6;animation:toast-in .2s ease-out; }
+#notice:not(:empty)::before { content:'✓';display:inline-block;font-weight:800;margin-right:10px; }
+@keyframes toast-in { from { opacity:0;transform:translateY(8px); } to { opacity:1;transform:none; } }
+.mobile-navigation { display:none; }
+@media(max-width:800px) {
+ .header-left .navigation { display:none; }
+ .header-container { padding:12px 16px; }
+ .school-name { max-width:140px;font-size:9px; }
+ .header-logo { font-size:22px; }
+ .user-profile { margin-left:auto; }
+ .profile-name,.profile-role { display:none; }
+ .app-content { padding-bottom:110px; }
+ .mobile-navigation { position:fixed;bottom:0;left:0;right:0;z-index:30;display:flex;justify-content:space-around;background:#ffffffee;backdrop-filter:blur(16px);border-top:1px solid #e3e8f0;padding:8px 12px calc(8px + env(safe-area-inset-bottom)); }
+ .mobile-navigation button { flex:1;min-height:54px;max-width:160px;font-size:12px; }
+ .mobile-navigation .nav-icon { display:block;font-size:18px;margin-bottom:3px; }
+ #notice:not(:empty) { bottom:90px;right:16px; }
+ .calendar-scroll { padding:0 8px 12px; }
+ .panel-header { padding:20px; }
+ .summary-grid { grid-template-columns:repeat(3,minmax(0,1fr));gap:8px; }
+ .summary-card { padding:14px 10px; }
+ .summary-card span { font-size:11px;line-height:1.4;display:block; }
+ .summary-card strong { font-size:24px; }
+ .school-mark { width:36px;height:36px; }
+ .actions { flex-wrap:wrap; }
+}
+@media(prefers-reduced-motion:reduce) { *,*::before { animation:none!important;transition:none!important; } }

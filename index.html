@@ -649,6 +649,7 @@
     .reservation-details { overflow-wrap:anywhere; line-height:1.6; }
     @media(max-width:800px) { .navigation {display:flex; flex-wrap:wrap;} .header-left {gap:12px; flex-wrap:wrap;} .header-container {padding-top:12px;padding-bottom:12px;gap:10px;} }
   </style>
+<link rel="stylesheet" href="design.css">
 </head>
 
 <body>
@@ -860,9 +861,9 @@
 
 <main id="appScreen">
 <header class="app-header"><div class="header-container"><div class="header-left">
-<div class="header-logo">Sala<span>Info</span></div>
+<div class="school-brand"><svg class="school-mark" viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="11" width="48" height="33" rx="5" fill="none" stroke="#315ca5" stroke-width="3"/><path d="M25 53H39 M32 44V53" fill="none" stroke="#315ca5" stroke-width="3"/><circle cx="18" cy="20" r="2.5" fill="#2563eb"/><circle cx="26" cy="20" r="2.5" fill="#16a34a"/></svg><div class="header-logo">Sala<span>Info</span><small class="school-name">EMEB Vereador Evaldo Staidel</small></div></div>
 <nav class="navigation" aria-label="Principal"><button class="nav-button active" data-view="home">Início</button><button class="nav-button" data-view="reservations">Reservas</button><button class="nav-button" data-view="mine">Minha agenda</button></nav>
-</div><button id="logoutButton" class="logout-button">Sair</button></div></header>
+</div><div class="user-profile"><span id="profileInitials" class="avatar" aria-hidden="true"></span><div><span id="profileName" class="profile-name"></span><span id="profileRole" class="profile-role"></span></div></div><button id="logoutButton" class="logout-button">Sair</button></div></header>
 <div class="app-content">
 <section class="welcome"><div class="welcome-label">Sala de Informática</div><h1>Olá, Ana.</h1><p>Consulte a disponibilidade da sala e organize suas próximas reservas.</p></section>
 <p class="demo-note">Agenda compartilhada · Atualização automática a cada 15 segundos.</p>
@@ -884,13 +885,18 @@
 <p class="demo-note">Inclui datas passadas. O cancelamento libera a aula e remove a reserva.</p><div id="adminReservations"></div></article>
 </section>
 <section class="summary-grid"><article class="summary-card"><span>Aulas disponíveis hoje</span><strong id="availableCount">—</strong></article><article class="summary-card"><span>Aulas reservadas hoje</span><strong id="reservedCount">—</strong></article><article class="summary-card"><span>Minhas próximas reservas</span><strong id="mineCount">—</strong></article></section>
+<section class="panel weekly-panel" id="weeklyPanel">
+<header class="panel-header"><div><h2>Sua semana na SalaInfo</h2><p id="weekLabel" class="week-label"></p></div><div class="week-controls"><button id="previousWeek" aria-label="Semana anterior">←</button><button id="currentWeek">Esta semana</button><button id="nextWeek" aria-label="Próxima semana">→</button></div></header>
+<div class="calendar-legend"><span>Disponível</span><span class="legend-mine">Sua reserva</span><span class="legend-reserved">Ocupada</span></div>
+<div class="calendar-scroll" tabindex="0" role="region" aria-label="Calendário semanal, deslize para ver todos os dias"><table class="weekly-table" id="weeklyTable" aria-label="Aulas de segunda a sexta"></table></div>
+</section>
 <section class="dashboard-grid">
 <article class="panel" id="availabilityPanel"><header class="panel-header"><div><h2 id="availabilityTitle">Disponibilidade de hoje</h2><p id="selectedDateLabel"></p></div><button class="new-reservation" id="newReservation">+ Nova reserva</button></header>
 <div class="date-filter"><label for="viewDate">Consultar data </label><input id="viewDate" type="date" required></div><div class="schedule" id="schedule"></div></article>
 <article class="panel" id="minePanel"><header class="panel-header"><div><h2>Minhas próximas reservas</h2><p>Seus próximos encontros na Sala de Informática</p></div></header><div class="reservations-list" id="reservationsList"></div></article>
 </section>
-<footer class="school-footer"><strong>EMEB Vereador Evaldo Staidel</strong><p>SalaInfo</p></footer>
-</div></main>
+<footer class="school-footer"><strong>EMEB Vereador Evaldo Staidel</strong><p>SalaInfo · Organização para ensinar melhor</p></footer>
+</div><nav class="mobile-navigation" aria-label="Navegação no celular"><button class="nav-button active" data-view="home"><span class="nav-icon" aria-hidden="true">⌂</span>Início</button><button class="nav-button" data-view="reservations"><span class="nav-icon" aria-hidden="true">▦</span>Reservas</button><button class="nav-button" data-view="mine"><span class="nav-icon" aria-hidden="true">▤</span>Minha agenda</button></nav></main>
 <dialog id="reservationDialog" aria-labelledby="dialogTitle">
 <form id="reservationForm">
 <h2 id="dialogTitle">Nova reserva</h2><p class="demo-note">Sala de Informática · Professora Ana</p>

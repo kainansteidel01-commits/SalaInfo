@@ -48,10 +48,60 @@ $('teacherForm').onsubmit = async event => {
   finally { $('teacherPassword').value = ''; $('saveTeacher').disabled = false; }
 };
 const formatDate = value => new Intl.DateTimeFormat('pt-BR', { dateStyle: 'long', timeZone: 'America/Sao_Paulo' }).format(new Date(value + 'T12:00:00Z'));
+function shiftDate(value, amount) {
+  const date = new Date(value + 'T12:00:00Z'); date.setUTCDate(date.getUTCDate() + amount);
+  return date.toISOString().slice(0,10);
+}
+function monday(value) {
+  const day = new Date(value + 'T12:00:00Z').getUTCDay();
+  return shiftDate(value, -(day === 0 ? 6 : day - 1));
+}
+let weekStart = monday(today());
+function renderWeek() {
+  $('weekLabel').textContent = formatDate(weekStart) + ' — ' + formatDate(shiftDate(weekStart,4));
+  const table = $('weeklyTable'); table.replaceChildren();
+  const head = document.createElement('thead'), header = document.createElement('tr');
+  const corner = node('th','','Aula'); corner.scope = 'col'; header.append(corner);
+  ['Seg','Ter','Qua','Qui','Sex'].forEach((name,i) => {
+    const date = shiftDate(weekStart,i);
+    const cell = node('th',date === today() ? 'today-column' : '',name + ' · ' + date.slice(8) + '/' + date.slice(5,7));
+    cell.scope = 'col'; header.append(cell);
+  });
+  head.append(header); table.append(head);
+  const body = document.createElement('tbody');
+  for(let lesson=1;lesson<=5;lesson++) {
+    const line = document.createElement('tr'), label = node('th','',lesson + 'ª');
+    label.scope = 'row'; line.append(label);
+    for(let i=0;i<5;i++) {
+      const date = shiftDate(weekStart,i), r = rows.find(r=>r.date===date && r.lesson===lesson);
+      const mine = r?.userId === currentUser.id, past = date < today();
+      const state = r ? (mine ? 'mine' : 'reserved') : (past ? 'past' : '');
+      const cell = document.createElement('td'), slot = node(!r && !past ? 'button' : 'div','week-slot ' + state,'');
+      slot.append(node('strong','',r ? (mine ? 'Sua reserva' : 'Ocupada') : (past ? 'Encerrada' : 'Disponível')));
+      slot.append(node('small','',r ? r.teacher + ' · ' + r.schoolClass : (past ? 'Data passada' : 'Reservar aula')));
+      if(!r && !past) {
+        slot.type = 'button'; slot.setAttribute('aria-label','Reservar ' + lesson + 'ª aula em ' + formatDate(date));
+        slot.onclick = () => { $('viewDate').value=date; openReservation(lesson); };
+      }
+      cell.append(slot); line.append(cell);
+    }
+    body.append(line);
+  }
+  table.append(body);
+}
+$('previousWeek').onclick=()=>{ weekStart=shiftDate(weekStart,-7); renderWeek(); };
+$('nextWeek').onclick=()=>{ weekStart=shiftDate(weekStart,7); renderWeek(); };
+$('currentWeek').onclick=()=>{ weekStart=monday(today()); renderWeek(); };
+let toastTimer;
+new MutationObserver(() => {
+  clearTimeout(toastTimer);
+  if ($('notice').textContent) toastTimer=setTimeout(()=>{ $('notice').textContent=''; },9000);
+}).observe($('notice'),{childList:true});
 function node(tag, className, text) {
   const el = document.createElement(tag); el.className = className; el.textContent = text; return el;
 }
 function render() {
+  renderWeek();
   const date = $('viewDate').value;
   const selected = rows.filter(r => r.date === date);
   const mine = rows.filter(r => r.userId === currentUser.id && r.date >= today()).sort((a,b) => a.date.localeCompare(b.date) || a.lesson - b.lesson);
@@ -70,7 +120,8 @@ function render() {
     const detail = node('div', 'lesson-info', '');
     detail.append(node('strong', '', lesson + 'ª aula'), node('p', '', reservation ? reservation.teacher + ' · ' + reservation.schoolClass : 'Sala de Informática'));
     info.append(detail);
-    const status = node(reservation ? 'span' : 'button', 'status ' + (reservation ? 'reserved' : 'available'), reservation ? 'Reservada' : 'Disponível');
+    const own = reservation?.userId === currentUser.id;
+    const status = node(reservation ? 'span' : 'button', 'status ' + (reservation ? (own ? 'mine' : 'reserved') : 'available'), reservation ? (own ? 'Sua reserva' : 'Reservada') : 'Disponível');
     if (!reservation) {
       status.disabled = date < today();
       status.setAttribute('aria-label', 'Reservar ' + lesson + 'ª aula');
@@ -149,6 +200,10 @@ $('loginForm').onsubmit = async event => {
       try { await loadTeachers(); } catch(error) { $('teacherMessage').textContent = error.message; }
     }
     document.querySelector('.welcome h1').textContent = 'Olá, ' + currentUser.name + '.';
+    $('profileName').textContent = currentUser.name;
+    $('profileRole').textContent = currentUser.role === 'secretary' ? 'Secretaria' : 'Professor';
+    $('profileInitials').textContent = currentUser.name.trim().split(/\s+/).filter(Boolean).map(n=>n[0]).filter((_,i,a)=>i===0||i===a.length-1).join('').toUpperCase();
+    document.querySelector('.user-profile').setAttribute('aria-label', currentUser.name + ', ' + $('profileRole').textContent);
     document.querySelector('#reservationForm .demo-note').textContent = 'Sala de Informática · ' + currentUser.name;
     $('password').value = ''; $('password').type = 'password'; $('showPassword').textContent = 'Mostrar';
     $('loginMessage').style.display = 'none';
@@ -209,7 +264,8 @@ $('reservationForm').onsubmit = async event => {
   } finally { busy = false; $('confirmReservation').disabled = false; }
 };
 document.querySelectorAll('[data-view]').forEach(button => button.onclick = () => {
-  document.querySelectorAll('[data-view]').forEach(b => b.classList.toggle('active', b === button));
+  document.querySelectorAll('[data-view]').forEach(b => { b.classList.toggle('active', b.dataset.view === button.dataset.view); b.setAttribute('aria-current', b.dataset.view === button.dataset.view ? 'page' : 'false'); });
+  $('weeklyPanel').hidden = button.dataset.view === 'mine';
   $('availabilityPanel').hidden = button.dataset.view === 'mine';
   $('minePanel').hidden = button.dataset.view === 'reservations';
   if (button.dataset.view === 'home') $('viewDate').value = today();
